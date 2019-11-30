@@ -1,0 +1,33 @@
+{
+  "name": "employee-summary",
+  "version": "1.0.0",
+  "description": "Add employee profiles to a web page.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest --verbose test/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Winyumi/employee-summary.git"
+  },
+  "keywords": [
+    "employee",
+    "summary",
+    "profile"
+  ],
+  "author": "Winson Quon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Winyumi/employee-summary/issues"
+  },
+  "homepage": "https://github.com/Winyumi/employee-summary#readme",
+  "dependencies": {
+    "inquirer": "^7.0.0"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0"
+  }
+}
