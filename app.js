@@ -1,6 +1,10 @@
 // Node modules
 const inquirer = require("inquirer");
 const fs = require("fs");
+const util = require('util');
+
+const readFile = util.promisify(fs.readFile);
+const writeFile = util.promisify(fs.writeFile);
 
 // Lib modules
 const Engineer = require("./lib/Engineer");
@@ -41,8 +45,8 @@ async function addRole(member) {
     let { email } = await inquirer.prompt(questions.item(member, "email", "email address", validate.email));
     switch (member) {
         case "Manager":
-            let { phone } = await inquirer.prompt(questions.item(member, "phone", "office phone number", validate.required));
-            employees.push(new Manager(name, id, email, phone));
+            let { officeNumber } = await inquirer.prompt(questions.item(member, "officeNumber", "office phone number", validate.required));
+            employees.push(new Manager(name, id, email, officeNumber));
             break;
         case "Engineer":
             let { github } = await inquirer.prompt(questions.item(member, "github", "GitHub username", validate.required));
@@ -55,6 +59,55 @@ async function addRole(member) {
     }
 }
 
+function getHTMLModule(file) {
+    return readFile(file, "utf8");
+}
+
+async function generateHTML() {
+    let Template = {
+        Main: await getHTMLModule("./templates/main.html"),
+        Manager: await getHTMLModule("./templates/manager.html"),
+        Engineer: await getHTMLModule("./templates/engineer.html"),
+        Intern: await getHTMLModule("./templates/intern.html")
+    }
+
+    let employeesHTML = "";
+
+    for (let employee of employees) {
+        let html = Template[employee.constructor.name]
+        .replace("{% name %}", employee.name)
+        .replace("{% id %}", employee.id)
+        .replace("{% email %}", employee.email);
+        switch (employee.constructor.name) {
+            case "Manager":
+                html = html.replace("{% officeNumber %}", employee.officeNumber);
+                break;
+            case "Engineer":
+                html = html.replace("{% github %}", employee.github);
+                break;
+            case "Intern":
+                html = html.replace("{% school %}", employee.school);
+                break;
+        }
+        employeesHTML += html;
+    }
+    let completeHTML = Template["Main"].replace("{% employees %}", employeesHTML);
+
+    createHTML(completeHTML);
+}
+
+async function createHTML(html) {
+    console.log("Creating HTML...");
+    let file = "team.html";
+    let dir = "./output";
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
+    await writeFile(`${dir}/${file}`, html);
+    console.log(`HTML has been created to "${dir}/${file}".`);
+    return;
+}
+
 async function init() {
     console.log("Please build your team");
     await addRole("Manager");
@@ -63,8 +116,7 @@ async function init() {
     while (member != exit) {
         let { member } = await inquirer.prompt(questions.type());
         if (member === exit) {
-            console.log(employees);
-            return;
+            return generateHTML();
         }
         await addRole(member);
     }
