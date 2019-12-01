@@ -30,41 +30,46 @@ const questions = {
     }
 };
 
+let employees = [];
+
+async function addRole(member) {
+    let { name } = await inquirer.prompt(questions.item(member, "name", "full name"));
+    let { id } = await inquirer.prompt(questions.item(member, "id", "ID number"));
+    let { email } = await inquirer.prompt(questions.item(member, "email", "email address"));
+    switch (member) {
+        case "Manager":
+            let { phone } = await inquirer.prompt(questions.item(member, "phone", "phone number"));
+            employees.push(new Manager(id, name, email, phone));
+            break;
+        case "Engineer":
+            let { github } = await inquirer.prompt(questions.item(member, "github", "GitHub username"));
+            employees.push(new Engineer(id, name, email, github));
+            break;
+        case "Intern":
+            let { school } = await inquirer.prompt(questions.item(member, "school"));
+            employees.push(new Intern(id, name, email, school));
+            break;
+    }
+}
+
+function getRole(member) {
+    return member.constructor.name;
+}
+
 async function init() {
 
-    let manager = true;
+    await addRole("Manager");
+
+    let member = "";
     let exit = "I don't want to add anymore team members";
     while (member != exit) {
-        if (manager) {
-            var member = "Manager";
-        } else {
-            var { member } = await inquirer.prompt(questions.type());
-            if (member === exit) {
-                return;
-            }
+        let { member } = await inquirer.prompt(questions.type());
+        if (member === exit) {
+            console.log(employees);
+            return;
         }
-        var { name } = await inquirer.prompt(questions.item(member, "name", "full name"));
-        var { id } = await inquirer.prompt(questions.item(member, "id", "ID number"));
-        var { email } = await inquirer.prompt(questions.item(member, "email", "email address"));
-        switch (member) {
-            case "Manager":
-                var { phone } = await inquirer.prompt(questions.item(member, "phone", "phone number"));
-                var employee = new Manager(id, name, email, phone);
-                break;
-            case "Engineer":
-                var { github } = await inquirer.prompt(questions.item(member, "github", "GitHub username"));
-                var employee = new Engineer(id, name, email, github);
-                break;
-            case "Intern":
-                var { school } = await inquirer.prompt(questions.item(member, "school"));
-                var employee = new Intern(id, name, email, school);
-                break;
-        }
-        manager = false;
+        await addRole(member);
     }
-
-
-    console.log(employee);
 
 }
 
