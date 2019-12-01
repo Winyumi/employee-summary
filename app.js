@@ -53,9 +53,8 @@ async function addRole(member) {
 }
 
 async function init() {
-
+    console.log("Please build your team");
     await addRole("Manager");
-
     let member = "";
     let exit = "I don't want to add anymore team members";
     while (member != exit) {
@@ -66,7 +65,6 @@ async function init() {
         }
         await addRole(member);
     }
-
 }
 
 init();
