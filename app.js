@@ -38,16 +38,16 @@ async function addRole(member) {
     let { email } = await inquirer.prompt(questions.item(member, "email", "email address"));
     switch (member) {
         case "Manager":
-            let { phone } = await inquirer.prompt(questions.item(member, "phone", "phone number"));
-            employees.push(new Manager(id, name, email, phone));
+            let { phone } = await inquirer.prompt(questions.item(member, "phone", "office phone number"));
+            employees.push(new Manager(name, id, email, officeNumber));
             break;
         case "Engineer":
             let { github } = await inquirer.prompt(questions.item(member, "github", "GitHub username"));
-            employees.push(new Engineer(id, name, email, github));
+            employees.push(new Engineer(name, id, email, github));
             break;
         case "Intern":
             let { school } = await inquirer.prompt(questions.item(member, "school"));
-            employees.push(new Intern(id, name, email, school));
+            employees.push(new Intern(name, id, email, school));
             break;
     }
 }
