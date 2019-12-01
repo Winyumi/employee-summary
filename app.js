@@ -76,23 +76,23 @@ async function generateHTML() {
 
     for (let employee of employees) {
         let html = Template[employee.constructor.name]
-        .replace("{% name %}", employee.name)
-        .replace("{% id %}", employee.id)
-        .replace("{% email %}", employee.email);
+        .replace(/{% name %}/gi, employee.name)
+        .replace(/{% id %}/gi, employee.id)
+        .replace(/{% email %}/gi, employee.email);
         switch (employee.constructor.name) {
             case "Manager":
-                html = html.replace("{% officeNumber %}", employee.officeNumber);
+                html = html.replace(/{% officeNumber %}/gi, employee.officeNumber);
                 break;
             case "Engineer":
-                html = html.replace("{% github %}", employee.github);
+                html = html.replace(/{% github %}/gi, employee.github);
                 break;
             case "Intern":
-                html = html.replace("{% school %}", employee.school);
+                html = html.replace(/{% school %}/gi, employee.school);
                 break;
         }
         employeesHTML += html;
     }
-    let completeHTML = Template["Main"].replace("{% employees %}", employeesHTML);
+    let completeHTML = Template["Main"].replace(/{% employees %}/gi, employeesHTML);
 
     createHTML(completeHTML);
 }
