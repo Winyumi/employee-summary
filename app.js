@@ -52,10 +52,6 @@ async function addRole(member) {
     }
 }
 
-function getRole(member) {
-    return member.constructor.name;
-}
-
 async function init() {
 
     await addRole("Manager");
